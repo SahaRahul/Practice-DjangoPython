@@ -1,0 +1,946 @@
+## ----------------- Day# 1 ----------------- ##
+
+1. pip install virtualenv
+2. virtualenv .venv -p <path to python.exe>
+3. .venv/Scripts/activate
+4. pip install django
+5. django-admin
+6. django-admin startproject <project_name>
+7. cd <project_name>
+8. python manage.py runserver
+(.venv) F:\development\clubWebsites\password_generator>python manage.py runserver
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 17 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+Run 'python manage.py migrate' to apply them.
+July 20, 2020 - 09:41:36
+Django version 3.0.8, using settings 'password_generator.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+9. Launch the application on localhost
+10. python manage.py help
+11. settings.py 
+default
+DEBUG=True
+ALLOWED_HOSTS = []
+
+changes
+DEBUG=False
+ALLOWED_HOSTS = ['localhost'] 
+
+# Database
+To change the default 'db.sqlite3' to any value like 'egg.sqlite3', it will change
+12. urls.py
+various html path to handle the address bar
+13. python manage.py startapp <app_name_generator>
+New folder structure generated for the application
+14. update the settings.py with the new app_name in section: # Application definition INSTALLED_APPS
+15. urls for website - urls.py in the project folder
+http://127.0.0.1:8000/admin
+You can rename the admin to any string, the automatically the url path changes
+urlpatterns = [
+    path('admin/', admin.site.urls),
+]
+16. Currently, we have the home page created by Django. Now we will be creating our Own first custom page. 
+we are overriding the path parameter.
+
+urlpatterns = [
+    path('', views.home),
+]
+17. It will throw error, it is looking for views. So lets import views.py from the application. New error, home is not defined inside views.
+from django.contrib import admin
+from django.urls import path
+from generator import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.home),
+]
+18. Create a function named a home:
+
+from django.shortcuts import render
+
+# Create your views here.
+def home(requests):
+    return "Hello there friend."
+	
+19. Once more error: No I cannot read a String. So lets resolve the error.
+
+from django.shortcuts import render
+from django.http import HttpResponse
+
+
+# Create your views here.
+def home(requests):
+    return HttpResponse("Hello there my friend.")
+
+20. Little bit of HTML:
+
+### views.py ###
+
+# Updated function
+def letsDance(requests):
+    return HttpResponse('<h1> We are dancing. </h1>')
+
+### urls.py ###
+
+# Updated path
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.home),
+    path('dance', views.letsDance)
+]
+
+21. Lets work with template:
+
+Create a new folder in the application folder, name it as "template". 
+Insider the "template" folder create a folder with application name.
+Inside it place a html file.
+
+write a simple html code.
+
+You all are welcome to my family.
+<h1> This earth is so beautiful </h1>
+
+Changes in the views.py file
+#-------------------------------------------------------#
+from django.shortcuts import render
+from django.http import HttpResponse
+
+
+# Create your views here.
+def home1(request):
+    return HttpResponse("Hello there friend.")
+
+def home(request):
+    return render(request, 'generator/home.html')
+
+def letsDance(request):
+    return HttpResponse('<h1> We are dancing. </h1>')
+#-------------------------------------------------------#
+
+22. Passing data from the program to the HTML page
+
+Inside views.py
+
+def home(request):
+    # Pretty cool to pass the value into the Web page programmatically
+    return render(request, 'generator/home3.html', {'password': 'fdfe#324d'})
+
+Inside template HTML page
+
+You all are welcome to my family.
+<h1> This earth is so beautiful </h1>
+
+{{ password }}
+
+## ----------------- Day# 2 ----------------- ##
+
+1. Create project in Django
+
+django-admin startproject password_generator_day2
+
+2. Change directory inside the project
+
+cd password_generator_day2
+
+3. Create application in Django
+
+python manage.py startapp generator_day2
+
+4. Create template folder in the application folder
+
+cd generator_day2
+mkdir templates
+cd templates
+mkdir generator_day2
+
+# Store all the html files that will be referred inside views.py of application
+
+5. urls.py
+
+from django.contrib import admin
+from django.urls import path
+from generator_day2 import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.home)
+]
+
+6. views.py
+
+from django.shortcuts import render
+from django.http import HttpResponse
+
+# Create your views here.
+def home(request):
+    return HttpResponse("Welcome to Day2 coding of Django.")
+
+7. Add the application in the setting for INSTALLED_APPS
+
+    'generator_day2'
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'generator_day2',
+]
+
+8. Now we will work with templates to create an HTML
+
+7. Link that template from the views.py
+
+from django.shortcuts import render
+from django.http import HttpResponse
+
+
+# Create your views here.
+def home(request):
+    return HttpResponse("Welcome to Day2 coding of Django.")
+
+def password(request):
+    return render(request, 'generator_day2/pwd.html')
+
+
+8. How the HTML looks like, i.e. pwd.html
+
+<h1> Password Generator </h1>
+
+<form action="">
+    <select name="length"> 
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+    </select>
+
+    <input type="submit" value="Generate Password">
+</form>
+
+What we have in the above HTML:
+a) option to select from dropdown
+b) submit button "Generate Password"
+
+9. Now lets navigate to different page, which is again another html - pwdgenerated.html
+
+<h1> Password Generator </h1>
+
+<form action="passwordgen">
+    <select name="length"> 
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+    </select>
+
+    <input type="submit" value="Generate Password">
+</form>
+
+10. views.py :: Please note the action parameter above step is matching with a method
+
+from django.shortcuts import render
+from django.http import HttpResponse
+
+# Create your views here.
+def home(request):
+    return HttpResponse("Welcome to Day2 coding of Django.")
+
+def password(request):
+    return render(request, 'generator_day2/pwd.html')
+
+def passwordgen(request):
+    return render(request, 'generator_day2/pwdgenerated.html')
+
+11. urls.py :: Please note the path has been updated to navigate to new html page
+
+from django.contrib import admin
+from django.urls import path
+from generator_day2 import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('password/', views.password),
+    path('password/passwordgenerated', views.passwordgen),
+    path('', views.home),
+]
+
+12. Now lets add a name reference to the path
+
+from django.contrib import admin
+from django.urls import path
+from generator_day2 import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('password/', views.password),
+    # path('password/passwordgenerated', views.passwordgen),
+    path('password/passwordgenerated', views.passwordgen, name='pwdgen'),
+    path('', views.home),
+]
+
+13. Changes in the html - pwdgenerated.html, to access through name reference urls.py
+
+<h1> Password Generator </h1>
+
+<form action="{% url 'pwdgen' %}">
+    <select name="length"> 
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+    </select>
+
+    <input type="submit" value="Generate Password">
+</form>
+
+
+14. No change in the views.py file
+
+from django.shortcuts import render
+from django.http import HttpResponse
+
+
+# Create your views here.
+def home(request):
+    return HttpResponse("Welcome to Day2 coding of Django.")
+
+def password(request):
+    return render(request, 'generator_day2/pwd.html')
+
+def passwordgen(request):
+    return render(request, 'generator_day2/pwdgenerated.html')
+
+
+15. Now we will work to generate a random alphabetic password
+
+views.py has the core logic
+
+def passwordgen(request):
+
+    characters = list('abcdefghijklmnopqrstuvwxyz')   
+    
+    length = 10
+    thepassword = ''
+    for x in range(length):
+        thepassword += random.choice(characters)
+
+    return render(request, 'generator_day2/pwdgenerated.html', {'password': thepassword})
+
+16. Small code to receive the value passed from the views.py
+
+<h1> Your password is : </h1>
+<h3> {{ password }} </h3>
+
+17. We will pass value from the HTML form 1 >> views.py >> HTML form 2 
+
+<h1> Password Generator </h1>
+
+<form action="{% url 'pwdgen' %}">
+    <select name="length"> 
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9" selected = "selected">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+    </select>
+    <br>
+    <input type="checkbox" name="uppercase"> Uppercase
+    <br>
+    <input type="checkbox" name="numbers"> Numbers
+    <br>
+    <input type="checkbox" name="special"> Special Char
+    <br>
+
+
+    <input type="submit" value="Generate Password">
+</form>
+
+18. Updating the function with the logic in views.py
+
+def passwordgen(request):
+
+    characters = list('abcdefghijklmnopqrstuvwxyz')   
+    
+    if request.GET.get('uppercase'):
+        characters.extend(list('ABCDEFGHIJKLMNOPQRSTUVWSYZ'))
+    
+    if request.GET.get('special'):
+        characters.extend(list('!@#$^&*()_+'))
+
+    if request.GET.get('numbers'):
+        characters.extend(list('0123456789'))
+
+    length = int(request.GET.get('length'))
+    thepassword = ''
+    for x in range(length):
+        thepassword += random.choice(characters)
+
+    return render(request, 'generator_day2/pwdgenerated.html', {'password': thepassword})
+
+
+19. Create an About page, use hyper link with <a></a> in html
+
+tips:
+<a href="{% url 'home'%}">Password Generator</a>
+<a href="{% url 'about' %}"> About </a>
+<a href="{% url 'home' %}"> Home </a>
+
+def about(request):
+    return render(request, 'generator_day2/about.html')
+
+path('About', views.about, name='about'),
+
+
+20. Now we will use CSS bootstrap to decorate the website
+
+Go to the bootstrap website, get the CSS copied in your HTML on top. Current version is 4.5.
+Use the class and div to decorate the section.
+Various classes has various properties.
+
+
+
+## ----------------- Day# 3 ----------------- ##
+
+1. Setup the virtual environment with virtualenv
+
+2. Ensure django is installed
+
+3. Create project project name personal_profile
+django-admin startproject personal_profile
+
+4. cd <project_name>
+
+5. python manage.py runserver
+Check the application is running fine
+
+6. create applications - 2 apps - personal_prof_app and blog
+django-admin startapp personal_prof_app
+django-admin startapp blog_app
+
+7. Update the INSTALLED_APPS list in settings.py
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'personal_prof_app',
+    'blog_app',
+]
+
+8. Create template folder in the application folder
+
+cd personal_prof_app
+mkdir templates
+cd templates
+mkdir personal_prof_app
+
+# Store all the html files that will be referred inside views.py of application
+
+9. Now we will create the placeholder for Project or Article in the Webpage. To do we 
+will update the models.py 
+
+from django.db import models
+
+# Refer to the documentation of Django Models
+class Project(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.CharField(max_length=250)
+    image = models.ImageField(upload_to='personal_prof_app/images/') 
+    url = models.URLField(blank=True)
+
+10. Make sure you have pip install pillow, to use image in python
+
+11. Now lets see the changes - python manage.py runserver
+
+You have 17 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+Run 'python manage.py migrate' to apply them.
+
+11. Lets correct the error - follow the instruction
+
+Run 'python manage.py migrate'
+
+12. Need to migrate the new model that we have created. TODO on creating new model.
+
+Run 'python manage.py makemigrations'
+
+13. Lets test and rerun the server
+
+Run 'python manage.py runserver'
+
+14. Navigate to admin
+
+Now if you go to admin, you get to see the login screen. 
+So lets create superuser to access the admin.
+
+Run 'python manage.py createsuperuser'
+
+rahuls
+xxxxxxxx
+
+You can create multiple superuser
+
+Run 'python manage.py changepassword <superuserId>'
+
+rxxxxxx3
+
+15. Project is still not available on login to the admin
+http://127.0.0.1:8000/admin/
+
+16. Go to admin.py, register the project model insider it
+
+from django.contrib import admin
+from .models import Project
+
+# Register your models here.
+admin.site.register(Project)
+
+17. You will find now Project section if you login to http://127.0.0.1:8000/admin/
+Update the fields that you have created in the model as per your website need
+
+18. Lets create a MEDIA_ROOT to store all the media files
+
+settings.py
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+19. Update the urls.py
+
+from django.contrib import admin
+from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.home),
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+
+20. Post adding the above line, in urls.py, the Django's default home page is now disable.
+
+21. Follow the previous step to create a home.html files as part of day#2
+Now for that we recollect that we need to update the views.py. 
+Put the home.html insider template/appname/ path.
+
+22. Now I need to pass the project db object that we created in model into the html file.
+
+from django.shortcuts import render 
+from .models import Project
+
+# Create your views here.
+def home(request):
+    projects = Project.objects.all()
+    return render(request, 'personal_prof_app/home.html', {'projects':projects})
+
+23. We can see that project is available inside the html file now.
+
+<h1> Rahul's portfolio </h1>
+
+{{ projects }}
+
+24. Now we will show how access the project access the project object inside the html.
+
+To do it will iterate through all the objects present in the project object with for loop.
+Syntax is bit different but similar and easy enough.
+
+<h1> Rahul's portfolio </h1>
+
+{% for project in projects %}
+
+<h3>{{ project.title }}</h3>
+<h4>{{ project.description }}</h4>
+<img src="{{ project.image.url }}">
+{% if project.url %}
+<br><a href="{{ project.url }}">Link</a>
+{% endif %}
+
+{% endfor %}
+
+## ----------------- Day# 4 ----------------- ##
+Continuation of Day 3
+
+25. Now we are going to create another app inside the same project. So it might be a 
+case that you have a large website and functionality can be divided into multiple 
+applications.
+
+26. Go to the project folder, here it is personal_profile. We need to update the urls.py
+
+There you get a suggestion:
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+
+So what it does say. It says that you can use include to add urls of another application 
+into the project urls.py, which set the base path 'blog/' in this case.
+
+27. Update the urls.py in project folder
+
+from django.contrib import admin
+from django.urls import path, include              # We have imported include
+from django.conf.urls.static import static
+from django.conf import settings
+from personal_prof_app import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.home, name= "home"),
+    path('blog/',include('blog_app.urls')),        # We have set a path to <app_name>.urls
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+
+28. create urls.py inside application
+
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.all_blogs, name= "all_blogs"),
+]
+
+29. Create the models.py and register the model in admin.py
+#-----------------------------------------------------#
+#                     models.py                       #
+#-----------------------------------------------------#
+from django.db import models
+
+# Refer to the documentation of Django Models
+class Blog(models.Model):
+    title = models.CharField(max_length=200)
+    date = models.DateField()
+    description = models.TextField()
+#-----------------------------------------------------#
+#                      admin.py                       #
+#-----------------------------------------------------#
+from django.contrib import admin
+from .models import Blog
+
+# Register your models here.
+admin.site.register(Blog)
+#-----------------------------------------------------#
+
+
+
+30. update views.py inside application
+
+from django.shortcuts import render
+from .models import Blog
+
+# Create your views here.
+def all_blogs(request):
+
+    blogs = Blog.objects.all()
+    # You can select specific objects from the Database
+    # blogs = Blog.objects.order_by('-date')[:2]
+    return render(request, 'blog_app/all_blogs.html', {'blogs':blogs})
+
+31. Also create the all_blogs.html inside the templates/<app_name> folder
+
+<h1>Wecome to Blog</h1>
+
+{% for blog in blogs %}
+<br>
+<h3>{{ blog.title }}</h3>
+<h6>{{ blog.date }}</h6>
+<h4>{{ blog.description }}</h4>
+<br>
+
+{% endfor %}
+
+32. All the above steps are perform to make the code more modular and managable
+
+
+admin.py > models.py > views.py > urls.py > 
+                                > all_blogs.html
+
+Your models have changes that are not yet reflected in a migration, and so won't be applied.
+Run 'manage.py makemigrations' to make new migrations, and then re-run 'manage.py migrate' to apply them. 
+
+
+33. Static files - In some case we restrict even administator to update the files or photos.
+
+Create a static folder inside the application folder, put the file, ensure the file name is 
+not having any space in between. Update the HTML code to show the image file or href link.
+
+<h1> Rahul's portfolio </h1>
+
+{% load static %}
+<a href="{% static 'personal_prof_app/TBqa.pdf' %}">Download Me</a>
+<img src="{% static 'personal_prof_app/mypic.jpg' %}">
+
+34. Detail page for individual blog id with href link
+
+Changes in views:
+from django.shortcuts import render, get_object_or_404
+from .models import Blog
+
+def all_blogs(request):
+    blogs = Blog.objects.all()
+    return render(request, 'blog_app/all_blogs.html', {'blogs':blogs})
+
+# Below method helps to get details from model with primary key and pass information to the HTML
+def detail(request, blog_id):
+    blog = get_object_or_404(Blog, pk=blog_id)
+    return render(request, 'blog_app/detail.html', {'blog':blog})  
+
+Changes in urls:
+from django.urls import path
+from . import views
+
+app_name = 'blog'
+
+urlpatterns = [
+    path('', views.all_blogs, name= "all_blogs"),
+    path('<int:blog_id>/', views.detail, name="detail"),
+]
+
+Changes in HTML:
+<a href="{% url 'blog:detail' blog.id %}"><h3>{{ blog.title }}</h3></a>
+
+35. Date formatting: For reference see more in the django documentation
+
+<h6>{{ blog.date|date:'M d Y'|upper }}</h6>
+
+36. String formatting with HTML: For reference see more in the django documentation
+
+<h2>Rahul has written {{ blogs.count }} blog{{ blogs.count|pluralize }} </h2>
+<h5>{{ blog.description|safe|truncatechars:50 }}</h5>
+<h5>{{ blog.description|striptags|truncatechars:50 }}</h5>
+
+37. Replacing sequence with title name in admin models in localhost/admin 
+
+from django.db import models
+
+class Project(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.CharField(max_length=250)
+    image = models.ImageField(upload_to='personal_prof_app/images/') 
+    url = models.URLField(blank=True)
+
+    # Below method is used to display title. Any information can be appended with it.
+    def __str__(self):
+        return self.title
+
+38. Now lets work with bootstrap, CSS.
+
+Create a base.html which will have navbar, css, javascript.
+
+update the <body> </body> section of base.html, with the block content so that different
+block can be used for different web pages.
+
+In every webpage have a section to consider the content of base.html with navbar, css, and js into it.
+
+You can use content or any other name, make sure you use the same in the other html
+{% block content %}{% endblock %}
+
+
+
+Inside other html pages consider the same navbar, css so have similar styles.
+
+{% extends 'personal_prof_app/base.html' %}
+
+{% block content %}
+
+Put all ur existing html codes inside.
+
+
+{% endblock %}
+
+## ----------------- Day# 4 ----------------- ##
+Now we are going to create a Project with SignUp/SignIn/SignOut
+
+1. Create a project where we will create SignUp 
+
+django-admin startproject proj_userauth
+python manage.py runserver
+
+If needed run - python manage.py migrate
+
+2. Create a app or you can use your existing app all.
+
+For existing app, you need to update urls.py, view.py, templates/<>.html
+
+3. Update the urls.py in the proj_userauth project
+
+What shall we update there? 
+We need to let the project know about the new views for signup.
+
+# Here we are creating a Form with the help Django's django.contrib.auth.forms module
+
+from django.shortcuts import render
+from django.contrib.auth.forms import UserCreationForm
+
+# Create your views here.
+def signupuser(request):
+
+    return render(request, 'userauth_app/signupuser.html', {'form':UserCreationForm()})
+
+4. Update the html for signup with the form
+simple to start:
+<h1>Sign Up</h1>
+{{ form }}
+
+better decorate:
+<h1>Sign Up </h1>
+
+<form method="POST">
+
+    {{ form.as_p }}
+    <button type='submit'>Sign Up</button>
+</form>
+
+# Here we are using POST method, so basically POST is secure one compared to GET.
+It hide the data entered by the user when communicating via API over URL.
+
+# {% csrf_token %} need to added avoid "CSRF verification failed. Request aborted."
+
+5. Also a super user need to be created.
+
+So lets create superuser to access the admin.
+
+Run 'python manage.py createsuperuser'
+
+rahul
+ralxxx
+
+You can create multiple superuser also.
+
+Run 'python manage.py changepassword <superuserId>'
+
+rxxxxxx3
+
+6. Now more validation to Create a User and if Password entered is confirmed
+## View.py ##
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User  # Create new instant of pre-built User model
+from django.db import IntegrityError    # To handle the existing userid/force unique user id
+from django.contrib.auth import login
+
+# Create your views here.
+def signupuser(request):
+    if request.method == 'GET':
+        
+        # First show up the page of sign up user page
+        return render(request, 'userauth_app/signupuser.html', {'form':UserCreationForm()})
+    else:
+        if request.POST['password1'] == request.POST['password2']:
+            try:
+                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'])
+                
+                # Save the user details
+                user.save()
+
+                # Login with the user entered information on Sign Up
+                login(request,user)
+
+                # Redirect to different view on successful Sign Up
+                return redirect('currentuser')
+
+            except IntegrityError:  # It is a db related exception so using django.db module
+                return render(request, 'userauth_app/signupuser.html', {'form':UserCreationForm(),'error':'User name already in use.'})
+        else:
+            return render(request, 'userauth_app/signupuser.html', {'form':UserCreationForm(),'error':'Password is not matching.'})
+
+# function created to redirect the user to this page on successful login 
+def currentuser(request):
+    return render(request, 'userauth_app/currentuser.html')
+
+
+7. Now create a base.html in template to show two different labels
+
+   a> To show the user logged if user is_authenticated, Logout option will come.
+   b> So Login and  based on the Login status by user
+
+{% if user.is_authenticated %}
+
+Logged in as {{ user.username }}
+
+<form action="{% url 'logoutuser' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit"> Logout </button>
+</form>
+
+{% else %}
+
+<a href="{% url 'signupuser' %}"> Sign Up </a>
+<a href="{% url 'loginuser' %}"> Login </a>
+
+{% endif %}
+<br>
+<br>
+
+{% block content %}{% endblock %}
+
+
+8. Other important functions required are:
+   a> login   ---------- It is similar to Sign Up just the form and password is different
+   b> logout 
+   c> home    ---------- On logout, it shall navigate to home page 
+
+   To do it, we need to update the urls.py to connect with the separate html in template and 
+   update the views.py to connect with different function and accept it request from user.
+
+## Necessary Modules
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
+
+
+## Defined function 
+def home(request):
+    return render(request, 'userauth_app/home.html') 
+
+def loginuser(request):
+    if request.method == 'GET':
+        return render(request, 'userauth_app/loginuser.html', {'form':AuthenticationForm()})
+    else:
+        user = authenticate(request, username = request.POST['username'], password = request.POST['password'])
+
+        if user is None:
+            return render(request, 'userauth_app/loginuser.html', {'form':AuthenticationForm(),'error':'Username and password did not match.'})
+        else:
+            login(request,user)
+            return redirect('currentuser')
+
+def logoutuser(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('home')
+
+9. Urls.py shall be updated to manage all the url and route
+
+from django.contrib import admin
+from django.urls import path
+from userauth_app import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+
+    path('signup/', views.signupuser, name='signupuser'),
+    path('login/', views.loginuser, name='loginuser'),
+    path('logout/', views.logoutuser, name='logoutuser'),
+
+    path('', views.home, name='home'),
+    path('current/', views.currentuser, name='currentuser'),
+]
+
+10. templates:
+
+   a> login html will be similar to the template of sign up.
+   b> currentuser shows the user name who successful login and pass to the base template
+   
